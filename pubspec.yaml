@@ -1,0 +1,22 @@
+name: echo_local_rag
+version: 0.1.0
+publish_to: "none"
+
+description: Offline-first local RAG demo using Gemma + ObjectBox Vector Search.
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  flutter_animate: ^4.5.0
+  google_fonts: ^6.2.1
+  objectbox: ^2.5.1
+  objectbox_flutter_libs: ^2.5.1
+  tflite_flutter: ^0.10.4
+  flutter_gemma: ^0.3.0
+
+flutter:
+  uses-material-design: true
