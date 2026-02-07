@@ -11,13 +11,13 @@ const _systemPrompt =
 
 class ChatController extends StateNotifier<ChatState> {
   ChatController({
-    required NoteSearchService searchService,
+    required VectorSearchService searchService,
     required GemmaService gemmaService,
   })  : _searchService = searchService,
         _gemmaService = gemmaService,
         super(const ChatState());
 
-  final NoteSearchService _searchService;
+  final VectorSearchService _searchService;
   final GemmaService _gemmaService;
 
   Future<void> sendMessage(String message) async {

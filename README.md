@@ -25,10 +25,6 @@ QUESTION: {user_query}
 - `lib/services/vector_search_service.dart`: `searchNotes` logic.
 - `lib/state/chat_controller.dart`: RAG prompt assembly + Gemma streaming.
 - `lib/screens/chat_screen.dart`: Scientific minimalist UI + streaming.
-- `example/`: Pub.dev-style example app showcasing the chat flow.
-
-## Example App (All Platforms)
-The `example/` app is a minimal Flutter shell that can be run on Android, iOS, Web, macOS, Windows, and Linux once the platform tooling is available on your machine.
 
 ## Next Steps
 1. Replace the `FakeEmbedder` with a real MediaPipe/TFLite embedder.

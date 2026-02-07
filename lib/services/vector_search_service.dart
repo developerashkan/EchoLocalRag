@@ -4,15 +4,11 @@ import 'package:objectbox/objectbox.dart';
 
 import '../models/note_chunk.dart';
 
-abstract class NoteSearchService {
-  Future<List<NoteChunk>> searchNotes(String query, {int limit});
-}
-
 abstract class Embedder {
   Future<List<double>> embed(String text);
 }
 
-class VectorSearchService implements NoteSearchService {
+class VectorSearchService {
   VectorSearchService({
     required Store store,
     required Embedder embedder,
@@ -24,7 +20,6 @@ class VectorSearchService implements NoteSearchService {
   final Embedder _embedder;
   final Box<NoteChunk> _chunksBox;
 
-  @override
   Future<List<NoteChunk>> searchNotes(String query, {int limit = 3}) async {
     final queryVector = await _embedder.embed(query);
     if (queryVector.isEmpty) {
