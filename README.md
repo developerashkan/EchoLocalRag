@@ -11,6 +11,22 @@ Echo is a 100% offline, local-first RAG (Retrieval Augmented Generation) Flutter
 - **Embeddings**: `tflite_flutter` (or MediaPipe Text Embedder) for local embeddings.
 - **State**: Riverpod for async state management.
 
+## Production Setup
+Echo ships as a package with an embeddable `EchoApp`. Inject your ObjectBox-backed
+search service and Gemma runtime via `AppDependencies` to enable the chat UI. If
+dependencies are missing, Echo shows a setup screen instead of crashing.
+
+```dart
+runApp(
+  EchoApp(
+    dependencies: AppDependencies(
+      searchService: yourSearchService,
+      gemmaService: yourGemmaService,
+    ),
+  ),
+);
+```
+
 ## Prompt Template
 ```text
 You are Echo, a private assistant. Use the following CONTEXT from the user's notes to answer the question. If the answer isn't in the context, say you don't know.

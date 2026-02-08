@@ -20,10 +20,12 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _controller = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -31,6 +33,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(chatControllerProvider);
     final notifier = ref.read(chatControllerProvider.notifier);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) {
+        return;
+      }
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: 300.ms,
+        curve: Curves.easeOut,
+      );
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
@@ -47,24 +60,37 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            Expanded(
-              child: ListView.builder(
+            if (state.errorMessage != null)
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: state.messages.length + (state.isStreaming ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index >= state.messages.length && state.isStreaming) {
-                    return _MessageBubble(
-                      role: ChatRole.assistant,
-                      content: state.streamingText,
-                    );
-                  }
-                  final message = state.messages[index];
-                  return _MessageBubble(
-                    role: message.role,
-                    content: message.content,
-                  );
-                },
+                child: _ErrorBanner(
+                  message: state.errorMessage!,
+                  onDismiss: notifier.clearError,
+                ),
               ),
+            Expanded(
+              child: state.messages.isEmpty && !state.isStreaming
+                  ? const _EmptyState()
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount:
+                          state.messages.length + (state.isStreaming ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index >= state.messages.length &&
+                            state.isStreaming) {
+                          return _MessageBubble(
+                            role: ChatRole.assistant,
+                            content: state.streamingText,
+                          );
+                        }
+                        final message = state.messages[index];
+                        return _MessageBubble(
+                          role: message.role,
+                          content: message.content,
+                        );
+                      },
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
@@ -102,6 +128,90 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     },
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  const _ErrorBanner({
+    required this.message,
+    required this.onDismiss,
+  });
+
+  final String message;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFEAEA),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.info, color: Color(0xFFB32020)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: const Color(0xFF7A1C1C),
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: onDismiss,
+            icon: const Icon(Icons.close, size: 18),
+            color: const Color(0xFF7A1C1C),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.auto_awesome,
+              size: 42,
+              color: Color(0xFF111111),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Ask Echo about your notes',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF111111),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Echo searches your local knowledge base and answers offline.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: const Color(0xFF4D4D4D),
               ),
             ),
           ],
