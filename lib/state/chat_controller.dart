@@ -2,23 +2,23 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/note_chunk.dart';
 import '../services/vector_search_service.dart';
+import 'chat_prompt_builder.dart';
 import 'chat_state.dart';
-
-const _systemPrompt =
-    'You are Echo, a private assistant. Use the following CONTEXT from the user\'s notes to answer the question. If the answer isn\'t in the context, say you don\'t know.';
 
 class ChatController extends StateNotifier<ChatState> {
   ChatController({
     required VectorSearchService searchService,
     required GemmaService gemmaService,
+    ChatPromptBuilder? promptBuilder,
   })  : _searchService = searchService,
         _gemmaService = gemmaService,
+        _promptBuilder = promptBuilder ?? const ChatPromptBuilder(),
         super(const ChatState());
 
   final VectorSearchService _searchService;
   final GemmaService _gemmaService;
+  final ChatPromptBuilder _promptBuilder;
 
   Future<void> sendMessage(String message) async {
     final updatedMessages = List<ChatMessage>.from(state.messages)
@@ -31,7 +31,7 @@ class ChatController extends StateNotifier<ChatState> {
     );
 
     final snippets = await _searchService.searchNotes(message, limit: 3);
-    final prompt = _buildPrompt(message, snippets);
+    final prompt = _promptBuilder.build(message, snippets);
 
     final buffer = StringBuffer();
     await for (final token in _gemmaService.streamCompletion(prompt)) {
@@ -51,10 +51,6 @@ class ChatController extends StateNotifier<ChatState> {
     );
   }
 
-  String _buildPrompt(String query, List<NoteChunk> snippets) {
-    final context = snippets.map((chunk) => '- ${chunk.content}').join('\n');
-    return '$_systemPrompt\nCONTEXT: $context\nQUESTION: $query';
-  }
 }
 
 abstract class GemmaService {
