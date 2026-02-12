@@ -18,7 +18,7 @@ class ChatController extends StateNotifier<ChatState> {
 
   final NoteSearchService _searchService;
   final GemmaService _gemmaService;
-  final ChatPromptBuilder _promptBuilder;
+  final ChatPromptBuilder _promptBuilder;aaa
 
   Future<void> sendMessage(String message) async {
     if (state.isStreaming) {
