@@ -19,12 +19,13 @@ class EchoApp extends StatelessWidget {
     return ProviderScope(
       overrides: [
         if (dependencies.isConfigured)
-          chatControllerProvider.overrideWith((ref) {
-            return ChatController(
-              searchService: dependencies.searchService!,
-              gemmaService: dependencies.gemmaService!,
-            );
-          }),
+          noteSearchServiceProvider.overrideWithValue(
+            dependencies.searchService!,
+          ),
+        if (dependencies.isConfigured)
+          gemmaServiceProvider.overrideWithValue(
+            dependencies.gemmaService!,
+          ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

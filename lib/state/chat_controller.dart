@@ -6,19 +6,33 @@ import '../services/note_search_service.dart';
 import 'chat_prompt_builder.dart';
 import 'chat_state.dart';
 
-class ChatController extends StateNotifier<ChatState> {
-  ChatController({
-    required NoteSearchService searchService,
-    required GemmaService gemmaService,
-    ChatPromptBuilder? promptBuilder,
-  })  : _searchService = searchService,
-        _gemmaService = gemmaService,
-        _promptBuilder = promptBuilder ?? const ChatPromptBuilder(),
-        super(const ChatState());
+final noteSearchServiceProvider = Provider<NoteSearchService>((ref) {
+  throw UnimplementedError('Override noteSearchServiceProvider in ProviderScope');
+});
 
-  final NoteSearchService _searchService;
-  final GemmaService _gemmaService;
-  final ChatPromptBuilder _promptBuilder;aaa
+final gemmaServiceProvider = Provider<GemmaService>((ref) {
+  throw UnimplementedError('Override gemmaServiceProvider in ProviderScope');
+});
+
+final chatControllerProvider = NotifierProvider<ChatController, ChatState>(
+  ChatController.new,
+);
+
+class ChatController extends Notifier<ChatState> {
+  ChatController({
+    ChatPromptBuilder? promptBuilder,
+  }) : _promptBuilder = promptBuilder ?? const ChatPromptBuilder();
+
+  late final NoteSearchService _searchService;
+  late final GemmaService _gemmaService;
+  final ChatPromptBuilder _promptBuilder;
+
+  @override
+  ChatState build() {
+    _searchService = ref.read(noteSearchServiceProvider);
+    _gemmaService = ref.read(gemmaServiceProvider);
+    return const ChatState();
+  }
 
   Future<void> sendMessage(String message) async {
     if (state.isStreaming) {

@@ -6,11 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../state/chat_controller.dart';
 import '../state/chat_state.dart';
 
-final chatControllerProvider =
-    StateNotifierProvider<ChatController, ChatState>((ref) {
-  throw UnimplementedError('Override in ProviderScope');
-});
-
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
 
