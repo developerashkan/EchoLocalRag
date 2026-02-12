@@ -11,6 +11,16 @@ Echo is a 100% offline, local-first RAG (Retrieval Augmented Generation) Flutter
 - **Embeddings**: `tflite_flutter` (or MediaPipe Text Embedder) for local embeddings.
 - **State**: Riverpod for async state management.
 
+
+## Platform Support
+Echo now targets **Android, iOS, Web, macOS, Windows, and Linux** from the same Flutter codebase.
+
+To generate or refresh native platform scaffolding in environments with Flutter installed:
+
+```bash
+flutter create --platforms=android,ios,web,windows,linux,macos .
+```
+
 ## Production Setup
 Echo ships as a package with an embeddable `EchoApp`. Inject your ObjectBox-backed
 search service and Gemma runtime via `AppDependencies` to enable the chat UI. If

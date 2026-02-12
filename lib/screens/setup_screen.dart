@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../app/platform_support.dart';
+
 class SetupScreen extends StatelessWidget {
   const SetupScreen({super.key, required this.statusMessage});
 
@@ -30,6 +32,17 @@ class SetupScreen extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 15,
                   color: const Color(0xFF4D4D4D),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+              Text(
+                isCurrentPlatformSupported()
+                    ? 'Platform support: ${currentPlatformLabel()} is supported.'
+                    : 'Platform support: ${currentPlatformLabel()} is not fully supported yet.',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: const Color(0xFF6A6A6A),
                 ),
               ),
               const SizedBox(height: 24),
