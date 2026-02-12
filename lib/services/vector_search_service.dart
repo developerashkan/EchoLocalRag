@@ -28,14 +28,38 @@ class VectorSearchService implements NoteSearchService {
       return [];
     }
 
-    final vectorQuery = _chunksBox
-        .query(NoteChunk_.embedding.nearestNeighbors(queryVector, limit))
-        .build();
+    final chunks = _chunksBox.getAll();
+    chunks.sort(
+      (a, b) => _cosineSimilarity(b.embedding, queryVector)
+          .compareTo(_cosineSimilarity(a.embedding, queryVector)),
+    );
 
-    final results = vectorQuery.find();
-    vectorQuery.close();
+    return chunks.take(limit).toList(growable: false);
+  }
 
-    return results;
+  double _cosineSimilarity(List<double> a, List<double> b) {
+    final size = min(a.length, b.length);
+    if (size == 0) {
+      return 0;
+    }
+
+    var dot = 0.0;
+    var normA = 0.0;
+    var normB = 0.0;
+
+    for (var i = 0; i < size; i++) {
+      final ai = a[i];
+      final bi = b[i];
+      dot += ai * bi;
+      normA += ai * ai;
+      normB += bi * bi;
+    }
+
+    if (normA == 0 || normB == 0) {
+      return 0;
+    }
+
+    return dot / (sqrt(normA) * sqrt(normB));
   }
 }
 
