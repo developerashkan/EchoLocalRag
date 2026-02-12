@@ -1,0 +1,11 @@
+.gradle/
+/local.properties
+/captures/
+GeneratedPluginRegistrant.java
+
+# Ignore Gradle task logs
+**/build/
+
+# Ignore Android Studio generated files
+.idea/
+*.iml
