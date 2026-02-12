@@ -11,7 +11,6 @@ class NoteChunk {
 
   String content;
 
-  @HnswIndex(dimensions: 384)
   @Property(type: PropertyType.floatVector)
   List<double> embedding;
 
