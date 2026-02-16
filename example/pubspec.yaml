@@ -15,3 +15,5 @@ dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/models/gemma-2b-it-gpu-int4.bin
