@@ -37,6 +37,67 @@ runApp(
 );
 ```
 
+### Where this should be added: app code vs "phone"
+- Put `runApp(EchoApp(...))` in your Flutter app entrypoint (`lib/main.dart` in your app project).
+- Put the model file (`gemma-2b-it-gpu-int4.bin`) on the device at runtime (for example by
+  shipping it as an asset and copying it to app documents/cache storage on first launch).
+- In short: **wiring is in app code**, **model binary lives on the phone/device filesystem**.
+
+### What to use for a free `searchService`
+`AppDependencies.searchService` expects a `NoteSearchService` implementation. The easiest
+free/OSS option in this repo is:
+
+- `VectorSearchService` (`lib/services/vector_search_service.dart`) + ObjectBox community edition,
+  with a local embedder implementation.
+
+That keeps retrieval fully offline and avoids paid APIs.
+
+## Developer Integration Guide
+
+### 1) Implement a Gemma runtime service
+Create a class that implements `GemmaService` and streams tokens from `flutter_gemma`.
+
+```dart
+class FlutterGemmaService implements GemmaService {
+  FlutterGemmaService(this.modelPath);
+
+  final String modelPath;
+
+  @override
+  Stream<String> streamCompletion(String prompt) async* {
+    // Pseudocode: initialize flutter_gemma with modelPath once,
+    // send prompt, then yield streamed tokens.
+  }
+}
+```
+
+### 2) Implement (or reuse) search
+Use `VectorSearchService` with ObjectBox and an `Embedder` implementation that runs on-device
+(for example with `tflite_flutter` or MediaPipe).
+
+### 3) Wire dependencies in `main.dart`
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final searchService = await buildSearchService();
+  final gemmaService = await buildGemmaService();
+
+  runApp(
+    EchoApp(
+      dependencies: AppDependencies(
+        searchService: searchService,
+        gemmaService: gemmaService,
+      ),
+    ),
+  );
+}
+```
+
+### 4) Keep fallback mode for unconfigured builds
+If you do not pass both services, Echo intentionally shows a setup screen. This is useful during
+incremental development and CI smoke tests.
+
 ## Prompt Template
 ```text
 You are Echo, a private assistant. Use the following CONTEXT from the user's notes to answer the question. If the answer isn't in the context, say you don't know.
