@@ -1,0 +1,19 @@
+name: echo_local_rag_example
+description: Example app for the Echo Local RAG package.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.2.1
+  echo_local_rag:
+    path: ../
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/models/gemma-2b-it-gpu-int4.bin
