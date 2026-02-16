@@ -52,6 +52,20 @@ free/OSS option in this repo is:
 
 That keeps retrieval fully offline and avoids paid APIs.
 
+
+### Zero-config model bootstrap (default app)
+The default `lib/main.dart` now auto-detects a Gemma asset at startup. To enable chat without writing any wiring code:
+
+1. Create `assets/models/` in the app project.
+2. Add your model file as either:
+   - `assets/models/gemma-2b-it-gpu-int4.bin`, or
+   - `assets/models/gemma.bin`
+3. Ensure `pubspec.yaml` includes `assets/models/` under `flutter.assets`.
+4. Restart the app.
+
+If a valid file is found, Echo switches directly to chat mode.
+If not, Echo shows setup guidance.
+
 ## Developer Integration Guide
 
 ### 1) Implement a Gemma runtime service

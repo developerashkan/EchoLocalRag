@@ -47,19 +47,19 @@ class SetupScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               _SetupStep(
-                title: 'Connect your local vector store',
+                title: 'Add a Gemma .bin model asset',
                 description:
-                    'Provide an ObjectBox Store with your note chunks and embeddings.',
+                    'Place your model at assets/models/gemma-2b-it-gpu-int4.bin (or assets/models/gemma.bin).',
               ),
               const SizedBox(height: 16),
               _SetupStep(
-                title: 'Attach your embedder + Gemma runtime',
+                title: 'Restart the app',
                 description:
-                    'Wire up an Embedder and GemmaService to run fully offline.',
+                    'Echo automatically enables chat once a valid model file is detected.',
               ),
               const Spacer(),
               Text(
-                'Once configured, rebuild the app with injected dependencies.',
+                'You can still inject custom dependencies, but the default setup now auto-detects model assets.',
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   color: const Color(0xFF6A6A6A),

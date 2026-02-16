@@ -3,6 +3,7 @@ library echo_local_rag;
 export 'models/note.dart';
 export 'models/note_chunk.dart';
 export 'app/app_dependencies.dart';
+export 'app/bootstrap_dependencies.dart';
 export 'app/echo_app.dart';
 export 'screens/chat_screen.dart';
 export 'screens/setup_screen.dart';
